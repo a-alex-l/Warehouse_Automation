@@ -6,7 +6,7 @@
 struct task {
     int from_coord1, from_coord2;
     int to_coord1, to_coord2;
-    sf::Color color;
+    int robot_index;
 };
 
 
