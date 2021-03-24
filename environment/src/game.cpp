@@ -1,48 +1,54 @@
+#include <iostream>
+#include "../include/sfml_show.h"
 #include "../include/game.h"
 #include "../include/script_parser.h"
 
-game::game(const std::string &file_name) {
-    parse(file_name, map, robots, tasks, path_planner);
+game::game(const std::string &file_name, path_finder *path_maker) {
+    std::cout << "Parsing." << std::endl;
+    parse(file_name, map, robots, tasks);
+    path_planner = path_maker;
 }
 
 void game::start() {
+    std::cout << "Game start." << std::endl;
+    show(map, robots, tasks);
+    std::cout << "Init planning." << std::endl;
+    path_planner->init_plans(robots, tasks, map);
     loop();
 }
 
 void game::loop() {
-    show();
-
-    if (!tasks.empty())
+    std::cout << "Loop." << std::endl;
+    path_planner->get_moves(robots, tasks, map);
+    show(map, robots, tasks);
+    move_robots();
+    remove_done_tasks();
+    path_planner->get_tasks_to_robots(robots, tasks, map);
+    static int how_long_tasks_not_done = 0, tasks_last_length = tasks.size();
+    how_long_tasks_not_done++;
+    if (tasks.size() != tasks_last_length)
+        how_long_tasks_not_done = 0;
+    if (!tasks.empty() || how_long_tasks_not_done == map[0].size() * map.size())
         loop();
 }
 
-void game::show() {
-    static sf::Sprite board, robot;
-    if (window == nullptr) { // ***** init of static sprites *****
-        window = new sf::RenderWindow(
-                sf::VideoMode(1 + 30 * map[0].size(),
-                              1 + 30 * map.size()),
-                "Warehouse");
-        sf::Image image_board;
-        image_board.create(1 + 30 * map[0].size(), 1 + 30 * map.size(), sf::Color(255, 255, 255));
-        for (int i = 0; i < 1 + 30 * map[0].size(); i += 30)
-            for (int j = 0; j < 1 + 30 * map.size(); j += 1)
-                image_board.setPixel(i, j, sf::Color(100, 100, 100));
-        for (int i = 0; i < 1 + 30 * map[0].size(); i += 1)
-            for (int j = 0; j < 1 + 30 * map.size(); j += 30)
-                image_board.setPixel(i, j, sf::Color(100, 100, 100));
-        for (int i = 0; i < map[0].size(); i++)
-            for (int j = 0; j < map.size(); j++)
-                if (map[j][i])
-                    for (int coord1 = 1 + 30 * i; coord1 < 30 * (i + 1); coord1++)
-                        for (int coord2 = 1 + 30 * j; coord2 < 30 * (j + 1); coord2++)
-                            image_board.setPixel(coord1, coord2, sf::Color(150, 150, 150));
-        sf::Texture texture_board;
-        texture_board.loadFromImage(image_board);
-        board.setTexture(texture_board);
+
+
+void game::move_robots() {
+    for (auto &robot : robots) {
+        robot.coord1 += robot.move_coord1;
+        robot.coord2 += robot.move_coord2;
+        robot.move_coord1 = robot.move_coord2 = 0;
     }
-    window->draw(board);
-    window->display();
+}
+
+void game::remove_done_tasks() {
+    for (auto &robot : robots) {
+        if (robot.coord1 == robot.job->to_coord1 && robot.coord2 == robot.job->to_coord2) {
+            tasks.erase(robot.job);
+            robot.job = tasks.end();
+        }
+    }
 }
 
 

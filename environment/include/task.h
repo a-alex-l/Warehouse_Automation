@@ -6,8 +6,7 @@
 struct task {
     int from_coord1, from_coord2;
     int to_coord1, to_coord2;
-    int robot_index;
+    sf::Color color;
 };
-
 
 #endif //WAREHOUSE_AUTOMATIZATION_TASK_H

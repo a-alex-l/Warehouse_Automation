@@ -1,12 +1,15 @@
-#ifndef WAREHOUSE_AUTOMATIZATION_ROBOT_H
-#define WAREHOUSE_AUTOMATIZATION_ROBOT_H
+#ifndef WAREHOUSE_AUTOMATION_ROBOT_H
+#define WAREHOUSE_AUTOMATION_ROBOT_H
 
 #include <SFML/Graphics.hpp>
+#include "task.h"
+#include <list>
 
 struct robot {
     int coord1, coord2;
-    sf::Color color;
-    int to_coord1, to_coord2;
+    std::list<task>::iterator job;
+    bool is_carrying_cargo = false;
+    int move_coord1 = 0, move_coord2 = 0;
 };
 
-#endif //WAREHOUSE_AUTOMATIZATION_ROBOT_H
+#endif //WAREHOUSE_AUTOMATION_ROBOT_H

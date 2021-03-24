@@ -6,11 +6,11 @@
 #include "../../competitors/include/path_finder.h"
 #include <vector>
 #include <string>
+#include <list>
 
 void parse(const std::string &file_name,
            std::vector<std::vector<bool>> &map,
            std::vector<robot> &robots,
-           std::vector<task> &tasks,
-           path_finder* path_planner);
+           std::list<task> &tasks);
 
 #endif //WAREHOUSE_AUTOMATIZATION_SCRIPT_PARSER_H

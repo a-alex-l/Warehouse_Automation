@@ -1,7 +1,10 @@
 #include <iostream>
-#include <SFML/Graphics.hpp>
+#include "environment/include/game.h"
+#include "competitors/include/bfs_by_dimensions.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    path_finder *path_maker = new bfs_path_finder();
+    game play("../main_script.txt", path_maker);
+    play.start();
     return 0;
 }
