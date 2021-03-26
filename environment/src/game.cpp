@@ -29,6 +29,7 @@ void game::loop() {
     move_robots();
     update_tasks();
     path_planner->get_tasks_to_robots(robots, tasks, map);
+    update_tasks();
     static int how_long_tasks_not_done = 0, tasks_last_length = tasks.size();
     how_long_tasks_not_done++;
     if (tasks.size() != tasks_last_length)

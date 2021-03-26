@@ -151,8 +151,8 @@ void bfs_path_finder::set_path_plans(const std::map<std::vector<int>, std::vecto
     std::vector<int> start = get_init_position_for_bfs(robots, tasks.size());
     while (now != start) {
         const std::vector<int>& next = parent.at(now);
-        for (int i = 0 ; i < robots.size() * 2; i += 2)
-            path_plans[i].push_front({ now[i] - next[i], now[i + 1] - next[i + 1] });
+        for (int i = 0 ; i < robots.size(); i++)
+            path_plans[i].push_front({ now[i * 2] - next[i * 2], now[i * 2 + 1] - next[i * 2 + 1] });
         now = next;
     }
 }
@@ -165,8 +165,9 @@ void bfs_path_finder::set_task_plans(const std::map<std::vector<int>, std::vecto
     std::vector<int> now = finish, start = get_init_position_for_bfs(robots, tasks.size());
     while (now != start) {
         const std::vector<int>& next = parent.at(now);
-        for (int i = 0 ; i < robots.size(); i += 2)
+        for (int i = 0 ; i < robots.size(); i++)
             if (now[robots.size() * 2 + i] != next[robots.size() * 2 + i] &&
+                        now[robots.size() * 2 + i] != -1 &&
                         next[robots.size() * 3 + now[robots.size() * 2 + i]] == -1)
                 task_plans[i].push_front(now[robots.size() * 2 + i]);
         now = next;
@@ -183,6 +184,8 @@ void bfs_path_finder::init_plans(const std::vector<robot> &robots,
     que.push(get_init_position_for_bfs(robots, tasks.size()));
     std::vector<int> now;
     while(!que.empty()) {
+        if (rand() % 3000 == 0)
+            std::cout << "Que: " << que.size() << " Used: " << parent.size() << std::endl;
         now = que.front();
         que.pop();
         long long i = fast_pow(5, robots.size()) - 1;
