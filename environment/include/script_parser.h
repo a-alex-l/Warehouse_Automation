@@ -11,6 +11,6 @@
 void parse(const std::string &file_name,
            std::vector<std::vector<bool>> &map,
            std::vector<robot> &robots,
-           std::list<task> &tasks);
+           std::vector<task> &tasks);
 
 #endif //WAREHOUSE_AUTOMATIZATION_SCRIPT_PARSER_H

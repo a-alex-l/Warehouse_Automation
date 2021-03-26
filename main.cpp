@@ -4,7 +4,7 @@
 
 int main() {
     path_finder *path_maker = new bfs_path_finder();
-    game play("../main_script.txt", path_maker);
+    game play("../tests/tests_scripts/test2.txt", path_maker);
     play.start();
     return 0;
 }

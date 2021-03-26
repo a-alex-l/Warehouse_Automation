@@ -8,7 +8,7 @@
 void parse(const std::string &file_name,
            std::vector<std::vector<bool>> &map,
            std::vector<robot> &robots,
-           std::list<task> &tasks) {
+           std::vector<task> &tasks) {
     std::ifstream input_file;
     input_file.open(file_name);
     if (!input_file.is_open())
@@ -18,7 +18,7 @@ void parse(const std::string &file_name,
         if (word == "map") {
             int first_size, second_size;
             input_file >> word >> first_size >> second_size;
-            map.resize(second_size, std::vector<bool>(first_size, false));
+            map.resize(first_size, std::vector<bool>(second_size, false));
             getline(input_file, word);
             for (int i = 0; i < map.size(); i++) {
                 getline(input_file, word);

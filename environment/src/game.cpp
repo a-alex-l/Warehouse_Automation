@@ -2,6 +2,7 @@
 #include "../include/sfml_show.h"
 #include "../include/game.h"
 #include "../include/script_parser.h"
+#include <cassert>
 
 game::game(const std::string &file_name, path_finder *path_maker) {
     std::cout << "Parsing." << std::endl;
@@ -33,20 +34,20 @@ void game::loop() {
 }
 
 
-
 void game::move_robots() {
     for (auto &robot : robots) {
         robot.coord1 += robot.move_coord1;
         robot.coord2 += robot.move_coord2;
         robot.move_coord1 = robot.move_coord2 = 0;
+        assert(!map[robot.coord1][robot.coord2] && "Error: robot tried enter wall!");
     }
 }
 
 void game::remove_done_tasks() {
     for (auto &robot : robots) {
-        if (robot.coord1 == robot.job->to_coord1 && robot.coord2 == robot.job->to_coord2) {
-            tasks.erase(robot.job);
-            robot.job = tasks.end();
+        if (robot.job != nullptr && robot.coord1 == robot.job->to_coord1 && robot.coord2 == robot.job->to_coord2) {
+            robot.job->status = 1;
+            robot.job = nullptr;
         }
     }
 }

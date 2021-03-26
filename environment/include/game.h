@@ -5,14 +5,13 @@
 #include "task.h"
 #include "../../competitors/include/path_finder.h"
 #include <vector>
-#include <list>
 #include <string>
 
 class game {
 private:
     std::vector<std::vector<bool>> map;
     std::vector<robot> robots;
-    std::list<task> tasks;
+    std::vector<task> tasks;
     path_finder *path_planner;
     bool is_mode_show = true;
     void loop();

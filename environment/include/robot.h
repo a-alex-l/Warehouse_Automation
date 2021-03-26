@@ -3,12 +3,10 @@
 
 #include <SFML/Graphics.hpp>
 #include "task.h"
-#include <list>
 
 struct robot {
     int coord1, coord2;
-    std::list<task>::iterator job;
-    bool is_carrying_cargo = false;
+    task *job = nullptr;
     int move_coord1 = 0, move_coord2 = 0;
 };
 

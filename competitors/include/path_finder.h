@@ -9,17 +9,17 @@ public:
 
     // time = ???
     virtual void init_plans(const std::vector<robot> &robots,
-                            const std::list<task> &tasks,
+                            const std::vector<task> &tasks,
                             const std::vector<std::vector<bool>> &map) {};
 
     // time = ???
     virtual void get_moves(std::vector<robot> &robots,
-                           const std::list<task> &tasks,
+                           const std::vector<task> &tasks,
                            const std::vector<std::vector<bool>> &map) = 0;
 
     // time = ???
     virtual void get_tasks_to_robots(std::vector<robot> &robots,
-                                     const std::list<task> &tasks,
+                                     const std::vector<task> &tasks,
                                      const std::vector<std::vector<bool>> &map) = 0;
 };
 
