@@ -37,10 +37,15 @@ void parse(const std::string &file_name,
             int tasks_count;
             input_file >> word  >> tasks_count;
             tasks.resize(tasks_count);
-            for (auto &task : tasks)
+            for (auto &task : tasks) {
                 input_file >> word >> word >>
-                        task.from_coord1 >> task.from_coord2 >> word >>
-                        task.to_coord1 >> task.to_coord2;
+                           task.from_coord1 >> task.from_coord2 >> word >>
+                           task.to_coord1 >> task.to_coord2;
+                int r = 55 + rand() % 200, g = 55 + rand() % 200, b = 55 + rand() % 200;
+                task.color = sf::Color(400 * r / (r + b + g),
+                                       400 * g / (r + b + g),
+                                       400 * b / (r + b + g));
+            }
         }
     }
     input_file.close();

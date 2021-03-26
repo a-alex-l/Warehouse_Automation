@@ -108,6 +108,19 @@ static std::vector<std::vector<int>> get_new_positions(const std::vector<int> &n
     std::vector<int> new_position = apply_move(now, move);
     std::vector<std::vector<int>> new_positions(1, new_position);
     for (int i = 0 ; i < move.size(); i += 2) {
+        if (now[i / 2 + move.size()] == -1) {
+            for (int j = 0; j < tasks.size(); j++) {
+                if (now[move.size() / 2 * 3 + j] == -1 &&
+                    tasks[j].from_coord1 == now[i] &&
+                    tasks[j].from_coord2 == now[i + 1]) {
+                    v_to_vv(new_positions);
+                    for (int k = int(new_positions.size()) / 2; k < new_positions.size(); k++) {
+                        new_positions[k][move.size() / 2 * 3 + j] = 0;
+                        new_positions[k][i / 2 + move.size()] = j;
+                    }
+                }
+            }
+        }
         if (now[i / 2 + move.size()] != -1) {
             if (tasks[now[i / 2 + move.size()]].to_coord1 == new_position[i] &&
                     tasks[now[i / 2 + move.size()]].to_coord2 == new_position[i + 1]) {
@@ -115,18 +128,6 @@ static std::vector<std::vector<int>> get_new_positions(const std::vector<int> &n
                 for (int j = int(new_positions.size()) / 2; j < new_positions.size(); j++) {
                     new_positions[j][move.size() / 2 * 3 + now[i / 2 + move.size()]] = 1;
                     new_positions[j][i / 2 + move.size()] = -1;
-                }
-            }
-        } else {
-            for (int j = 0; j < tasks.size(); j++) {
-                if (now[move.size() / 2 * 3 + j] == -1 &&
-                        tasks[j].from_coord1 == now[i] &&
-                        tasks[j].from_coord2 == now[i + 1]) {
-                    v_to_vv(new_positions);
-                    for (int k = int(new_positions.size()) / 2; k < new_positions.size(); k++) {
-                        new_positions[k][move.size() / 2 * 3 + j] = 0;
-                        new_positions[k][i / 2 + move.size()] = j;
-                    }
                 }
             }
         }
@@ -160,12 +161,14 @@ void bfs_path_finder::set_task_plans(const std::map<std::vector<int>, std::vecto
                                      const std::vector<int> &finish,
                                      const std::vector<robot> &robots,
                                      const std::vector<task> &tasks) {
-    task_plans.resize(tasks.size());
+    task_plans.resize(robots.size());
     std::vector<int> now = finish, start = get_init_position_for_bfs(robots, tasks.size());
     while (now != start) {
         const std::vector<int>& next = parent.at(now);
-        //for (int i = 0 ; i < robots.size() * 2; i += 2)
-            //path_plans[i].push_front({ now[i] - next[i], now[i + 1] - next[i + 1] });
+        for (int i = 0 ; i < robots.size(); i += 2)
+            if (now[robots.size() * 2 + i] != next[robots.size() * 2 + i] &&
+                        next[robots.size() * 3 + now[robots.size() * 2 + i]] == -1)
+                task_plans[i].push_front(now[robots.size() * 2 + i]);
         now = next;
     }
 }
@@ -219,12 +222,12 @@ void bfs_path_finder::get_moves(std::vector<robot> &robots,
 }
 
 void bfs_path_finder::get_tasks_to_robots(std::vector<robot> &robots,
-                                          const std::vector<task> &tasks,
+                                          std::vector<task> &tasks,
                                           const std::vector<std::vector<bool>> &map) {
     for (int i = 0; i < robots.size(); i++) {
         if (robots[i].job == nullptr && !task_plans[i].empty()) {
             if (!task_plans[i].empty()) {
-                robots[i].job = task_plans[i].front();
+                robots[i].job = &tasks[task_plans[i].front()];
                 task_plans[i].pop_front();
             }
         }

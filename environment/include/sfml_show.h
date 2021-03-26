@@ -15,10 +15,11 @@ void show(std::vector<std::vector<bool>> map,
     static sf::Sprite board, robot;
     static sf::Texture texture_board, texture_robot;
     if (window == nullptr) { // ***** init of static sprites *****
+        sf::ContextSettings settings;
+        settings.antialiasingLevel = 8;
         window = new sf::RenderWindow(
                 sf::VideoMode(1 + 30 * map[0].size(),
-                              1 + 30 * map.size()),
-                "Warehouse");
+                              1 + 30 * map.size()), "Warehouse", sf::Style::Default, settings);
         sf::Image image_board;
         image_board.create(1 + 30 * map[0].size(), 1 + 30 * map.size(), sf::Color(255, 255, 255));
         for (int i = 0; i < 1 + 30 * map.size(); i += 30)
@@ -39,16 +40,48 @@ void show(std::vector<std::vector<bool>> map,
         texture_robot.loadFromFile("../assets/Robot.png");
         robot.setTexture(texture_robot);
     }
-    for (int frame = 0; frame < 30; frame++) {
-        window->clear();
-        window->draw(board);
-        for (auto r : robots) {
-            robot.setPosition(r.coord2 * 30 + r.move_coord2 * frame + 3,
-                              r.coord1 * 30 + r.move_coord1 * frame + 3);
-            window->draw(robot);
+    if (window->isOpen()) {
+        sf::Event event;
+        while (window->pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window->close();
         }
-        window->display();
-        sf::sleep(sf::milliseconds(10));
+        window->setActive();
+
+        for (int frame = 0; frame < 30; frame++) {
+            window->clear();
+            window->draw(board);
+            for (auto &r : robots) {
+                robot.setPosition(r.coord2 * 30 + r.move_coord2 * frame + 3,
+                                  r.coord1 * 30 + r.move_coord1 * frame + 3);
+                window->draw(robot);
+                if (r.job != nullptr && r.job->status == 0) {
+                    sf::RectangleShape rectangle(sf::Vector2f(7, 7));
+                    rectangle.setFillColor(r.job->color);
+                    rectangle.setPosition(r.coord2 * 30 + r.move_coord2 * frame + 12,
+                                          r.coord1 * 30 + r.move_coord1 * frame + 12);
+                    window->draw(rectangle);
+                }
+            }
+            for (auto &t : tasks) {
+                if (t.status == -1 || t.status == 0) {
+                    sf::RectangleShape rectangle(sf::Vector2f(11, 11));
+                    rectangle.setFillColor(t.color);
+                    rectangle.setPosition(t.to_coord2 * 30 + 10,
+                                          t.to_coord1 * 30 + 10);
+                    window->draw(rectangle);
+                }
+                if (t.status == -1) {
+                    sf::RectangleShape rectangle(sf::Vector2f(5, 5));
+                    rectangle.setFillColor(t.color);
+                    rectangle.setPosition(t.from_coord2 * 30 + 13,
+                                          t.from_coord1 * 30 + 13);
+                    window->draw(rectangle);
+                }
+            }
+            window->display();
+            sf::sleep(sf::milliseconds(10));
+        }
     }
 }
 

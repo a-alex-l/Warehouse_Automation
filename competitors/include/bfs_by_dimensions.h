@@ -7,7 +7,7 @@
 class bfs_path_finder : public path_finder {
 private:
     std::vector<std::deque<std::pair<int, int>>> path_plans;
-    std::vector<std::deque<task*>> task_plans;
+    std::vector<std::deque<int>> task_plans;
 
     void set_path_plans(const std::map<std::vector<int>, std::vector<int>> &parent,
                         std::vector<int> now,
@@ -31,7 +31,7 @@ public:
 
     // time = robots.size
     void get_tasks_to_robots(std::vector<robot> &robots,
-                             const std::vector<task> &tasks,
+                             std::vector<task> &tasks,
                              const std::vector<std::vector<bool>> &map) override;
 };
 

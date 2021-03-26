@@ -19,7 +19,7 @@ public:
 
     // time = ???
     virtual void get_tasks_to_robots(std::vector<robot> &robots,
-                                     const std::vector<task> &tasks,
+                                     std::vector<task> &tasks,
                                      const std::vector<std::vector<bool>> &map) = 0;
 };
 

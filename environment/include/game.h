@@ -16,7 +16,7 @@ private:
     bool is_mode_show = true;
     void loop();
     void move_robots();
-    void remove_done_tasks();
+    void update_tasks();
 
 public:
     game(const std::string &file_name, path_finder *path_maker);
