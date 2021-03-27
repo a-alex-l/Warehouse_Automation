@@ -58,6 +58,11 @@ static bool can_move_with(const std::vector<int> &now,
             if (now[i] + move[i] == now[j] + move[j] &&
                     now[i + 1] + move[i + 1] == now[j + 1] + move[j + 1])
                 return false;
+            if (now[i] == now[j] + move[j] &&
+                    now[i + 1] == now[j + 1] + move[j + 1] &&
+                    now[j] == now[i] + move[i] &&
+                    now[j + 1] == now[i + 1] + move[i + 1])
+                return false;
         }
     }
     return true;
@@ -72,7 +77,7 @@ static std::vector<int> get_new_move_by_number(long long &move_number,
         for (int i = int(move.size()) - 2; i >= 0; i -= 2) {
             switch ((move_number / fast_pow(5, i / 2)) % 5) {
                 case 0:
-                    move[i] = 0, move[i + 1] = 0;
+                    move[i] = 0, move[i + 1] = 1;
                     break;
                 case 1:
                     move[i] = -1, move[i + 1] = 0;
@@ -84,7 +89,7 @@ static std::vector<int> get_new_move_by_number(long long &move_number,
                     move[i] = 1, move[i + 1] = 0;
                     break;
                 case 4:
-                    move[i] = 0, move[i + 1] = 1;
+                    move[i] = 0, move[i + 1] = 0;
                     break;
             }
         }
@@ -190,16 +195,18 @@ void bfs_path_finder::init_plans(const std::vector<robot> &robots,
         que.pop();
         long long i = fast_pow(5, robots.size()) - 1;
         do {
-            auto new_positions = get_new_positions(now, tasks_vector,
-                                      get_new_move_by_number(i, now, map, robots.size()));
-            for (auto &new_position : new_positions) {
-                if (parent.find(new_position) == parent.end()) {
-                    que.push(new_position);
-                    parent[new_position] = now;
-                    if (do_we_win(new_position, robots.size())) {
-                        now = new_position;
-                        i = -200;
-                        break;
+            auto move = get_new_move_by_number(i, now, map, robots.size());
+            if (i != -1) {
+                auto new_positions = get_new_positions(now, tasks_vector, move);
+                for (auto &new_position : new_positions) {
+                    if (parent.find(new_position) == parent.end()) {
+                        que.push(new_position);
+                        parent[new_position] = now;
+                        if (do_we_win(new_position, robots.size())) {
+                            now = new_position;
+                            i = -200;
+                            break;
+                        }
                     }
                 }
             }

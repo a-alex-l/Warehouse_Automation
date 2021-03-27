@@ -40,6 +40,18 @@ void game::loop() {
 
 
 void game::move_robots() {
+    for (auto &robot1 : robots) {
+        for (auto &robot2 : robots) {
+            assert(!(robot1.coord1 == robot2.coord1 + robot2.move_coord1 &&
+                     robot1.coord2 == robot2.coord2 + robot2.move_coord2 &&
+                     robot2.coord1 == robot1.coord1 + robot1.move_coord1 &&
+                     robot2.coord2 == robot1.coord2 + robot1.move_coord2) &&
+                   "Error: robots tried to go one through another one!");
+            assert(!(robot2.coord1 + robot2.move_coord1 == robot1.coord1 + robot1.move_coord1 &&
+                     robot1.coord2 + robot1.move_coord2 == robot1.coord2 + robot1.move_coord2) &&
+                   "Error: robot tried to go into another one!");
+        }
+    }
     for (auto &robot : robots) {
         robot.coord1 += robot.move_coord1;
         robot.coord2 += robot.move_coord2;
