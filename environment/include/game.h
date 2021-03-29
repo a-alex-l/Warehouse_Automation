@@ -13,8 +13,10 @@ private:
     std::vector<robot> robots;
     std::vector<task> tasks;
     path_finder *path_planner;
+    std::string file_name;
     bool is_mode_show = true;
     void loop();
+    void write_state(int steps_count);
     void move_robots();
     void update_tasks();
 

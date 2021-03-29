@@ -95,7 +95,10 @@ static std::vector<int> get_new_move_by_number(long long &move_number,
         }
         move_number--;
     } while(!can_move_with(now, move, map) && move_number != -1);
-    return move;
+    if (can_move_with(now, move, map))
+        return move;
+    else
+        return std::vector<int>(robots_size * 2, 0);
 }
 
 static std::vector<int> apply_move(const std::vector<int> &now,
@@ -185,6 +188,7 @@ void bfs_path_finder::init_plans(const std::vector<robot> &robots,
     assert(robots.size() <= 26 && "You can't use more then 26 robots.\nEven on 10 it's nearly pointless.");
     std::vector<task> tasks_vector = std::vector<task>(std::begin(tasks), std::end(tasks));
     std::map<std::vector<int>, std::vector<int>> parent;
+    parent[get_init_position_for_bfs(robots, tasks.size())] = get_init_position_for_bfs(robots, tasks.size());
     std::queue<std::vector<int>> que;
     que.push(get_init_position_for_bfs(robots, tasks.size()));
     std::vector<int> now;
@@ -196,17 +200,15 @@ void bfs_path_finder::init_plans(const std::vector<robot> &robots,
         long long i = fast_pow(5, robots.size()) - 1;
         do {
             auto move = get_new_move_by_number(i, now, map, robots.size());
-            if (i != -1) {
-                auto new_positions = get_new_positions(now, tasks_vector, move);
-                for (auto &new_position : new_positions) {
-                    if (parent.find(new_position) == parent.end()) {
-                        que.push(new_position);
-                        parent[new_position] = now;
-                        if (do_we_win(new_position, robots.size())) {
-                            now = new_position;
-                            i = -200;
-                            break;
-                        }
+            auto new_positions = get_new_positions(now, tasks_vector, move);
+            for (auto &new_position : new_positions) {
+                if (parent.find(new_position) == parent.end()) {
+                    que.push(new_position);
+                    parent[new_position] = now;
+                    if (do_we_win(new_position, robots.size())) {
+                        now = new_position;
+                        i = -200;
+                        break;
                     }
                 }
             }

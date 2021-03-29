@@ -3,12 +3,15 @@
 #include "../include/game.h"
 #include "../include/script_parser.h"
 #include <cassert>
+#include <fstream>
 
 game::game(const std::string &file_name, path_finder *path_maker) {
     std::cout << "Parsing." << std::endl;
     parse(file_name, map, robots, tasks);
     path_planner = path_maker;
-
+    this->file_name = file_name;
+    this->file_name.resize(this->file_name.size() - 4);
+    this->file_name += "_synopsis.txt";
 }
 
 void game::start() {
@@ -22,6 +25,13 @@ void game::start() {
     loop();
 }
 
+static bool do_we_win(const std::vector<task> &tasks) {
+    for (task t : tasks)
+        if (t.status != 1)
+            return false;
+    return true;
+}
+
 void game::loop() {
     std::cout << "Loop." << std::endl;
     path_planner->get_moves(robots, tasks, map);
@@ -30,25 +40,24 @@ void game::loop() {
     update_tasks();
     path_planner->get_tasks_to_robots(robots, tasks, map);
     update_tasks();
-    static int how_long_tasks_not_done = 0, tasks_last_length = tasks.size();
-    how_long_tasks_not_done++;
-    if (tasks.size() != tasks_last_length)
-        how_long_tasks_not_done = 0;
-    if (!tasks.empty() || how_long_tasks_not_done == map[0].size() * map.size())
+    static int steps_count = 0;
+    steps_count++;
+    write_state(steps_count);
+    if (!do_we_win(tasks))
         loop();
 }
 
 
 void game::move_robots() {
-    for (auto &robot1 : robots) {
-        for (auto &robot2 : robots) {
-            assert(!(robot1.coord1 == robot2.coord1 + robot2.move_coord1 &&
-                     robot1.coord2 == robot2.coord2 + robot2.move_coord2 &&
-                     robot2.coord1 == robot1.coord1 + robot1.move_coord1 &&
-                     robot2.coord2 == robot1.coord2 + robot1.move_coord2) &&
+    for (int r1 = 0 ; r1 < robots.size(); r1++) {
+        for (int r2 = r1 + 1 ; r2 < robots.size(); r2++) {
+            assert(!(robots[r1].coord1 == robots[r2].coord1 + robots[r2].move_coord1 &&
+                     robots[r1].coord2 == robots[r2].coord2 + robots[r2].move_coord2 &&
+                     robots[r2].coord1 == robots[r1].coord1 + robots[r1].move_coord1 &&
+                     robots[r2].coord2 == robots[r1].coord2 + robots[r1].move_coord2) &&
                    "Error: robots tried to go one through another one!");
-            assert(!(robot2.coord1 + robot2.move_coord1 == robot1.coord1 + robot1.move_coord1 &&
-                     robot1.coord2 + robot1.move_coord2 == robot1.coord2 + robot1.move_coord2) &&
+            assert(!(robots[r2].coord1 + robots[r2].move_coord1 == robots[r1].coord1 + robots[r1].move_coord1 &&
+                     robots[r1].coord2 + robots[r1].move_coord2 == robots[r2].coord2 + robots[r2].move_coord2) &&
                    "Error: robot tried to go into another one!");
         }
     }
@@ -56,7 +65,7 @@ void game::move_robots() {
         robot.coord1 += robot.move_coord1;
         robot.coord2 += robot.move_coord2;
         robot.move_coord1 = robot.move_coord2 = 0;
-        assert(!map[robot.coord1][robot.coord2] && "Error: robot tried enter wall!");
+        assert(!map[robot.coord1][robot.coord2] && "Error: robot tried enter a wall!");
     }
 }
 
@@ -75,6 +84,28 @@ void game::update_tasks() {
                 robot.job = nullptr;
             }
         }
+    }
+}
+
+void game::write_state(int steps_count) {
+    static std::ofstream output_file;
+    if (!output_file.is_open()) {
+        output_file.open(file_name);
+        if (!output_file.is_open())
+            throw std::ios_base::failure("Error: wrong file name. Can't open file " + file_name);
+    }
+    output_file << "Step: " << steps_count << "\n";
+    for (auto robot : robots) {
+        output_file << "    " << robot.move_coord1 << " " <<
+                                 robot.move_coord2 << " ";
+        if (robot.job != nullptr)
+            output_file << robot.job - &tasks[0] << "\n";
+        else
+            output_file << "-1\n";
+    }
+    if (do_we_win(tasks)) {
+        output_file << "Win!";
+        output_file.close();
     }
 }
 

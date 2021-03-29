@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.17)
-project(Warehouse_Automatization)
+project(Warehouse_Automation)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -33,7 +33,8 @@ add_executable(test
 
         competitors/include/path_finder.h
         competitors/include/bfs_by_dimensions.h
-        competitors/src/bfs_by_dimensions.cpp environment/include/sfml_show.h)
+        competitors/src/bfs_by_dimensions.cpp environment/include/sfml_show.h
+        competitors/include/path_from_file_reader.h competitors/src/path_from_file_reader.cpp)
 
 target_link_libraries(test sfml-graphics sfml-audio)
 

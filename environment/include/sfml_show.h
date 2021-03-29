@@ -65,10 +65,10 @@ void show(std::vector<std::vector<bool>> map,
             }
             for (auto &t : tasks) {
                 if (t.status == -1 || t.status == 0) {
-                    sf::RectangleShape rectangle(sf::Vector2f(11, 11));
+                    sf::RectangleShape rectangle(sf::Vector2f(9, 9));
                     rectangle.setFillColor(t.color);
-                    rectangle.setPosition(t.to_coord2 * 30 + 10,
-                                          t.to_coord1 * 30 + 10);
+                    rectangle.setPosition(t.to_coord2 * 30 + 11,
+                                          t.to_coord1 * 30 + 11);
                     window->draw(rectangle);
                 }
                 if (t.status == -1) {
