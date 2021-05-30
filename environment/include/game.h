@@ -21,6 +21,7 @@ private:
     void update_tasks();
 
 public:
+    game() = default;
     game(const std::string &file_name, path_finder *path_maker);
     void start();
 };

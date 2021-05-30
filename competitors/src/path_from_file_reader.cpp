@@ -32,7 +32,7 @@ void path_from_file_reader::get_tasks_to_robots(std::vector<robot> &robots,
     }
 }
 
-path_from_file_reader::path_from_file_reader(std::string &file_name) {
+path_from_file_reader::path_from_file_reader(const std::string &file_name) {
     std::ifstream input_file;
     input_file.open(file_name);
     if (!input_file.is_open())
