@@ -9,7 +9,7 @@
 #include <list>
 
 void parse(const std::string &file_name,
-           std::vector<std::vector<bool>> &map,
+           std::vector<std::string> &map,
            std::vector<robot> &robots,
            std::vector<task> &tasks);
 

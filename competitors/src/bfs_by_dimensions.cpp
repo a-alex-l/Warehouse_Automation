@@ -48,9 +48,9 @@ static long long fast_pow(long long a, long long d) {
 
 static bool can_move_with(const std::vector<int> &now,
                           const std::vector<int> &move,
-                          const std::vector<std::vector<bool>> &map) {
+                          const std::vector<std::string> &map) {
     for (int i = 0; i < move.size(); i += 2) {
-        if (map[now[i] + move[i]][now[i + 1] + move[i + 1]])
+        if (map[now[i] + move[i]][now[i + 1] + move[i + 1]] == '#')
             return false;
     }
     for (int i = 0; i < move.size(); i += 2) {
@@ -70,7 +70,7 @@ static bool can_move_with(const std::vector<int> &now,
 
 static std::vector<int> get_new_move_by_number(long long &move_number,
                                                const std::vector<int> &now,
-                                               const std::vector<std::vector<bool>> &map,
+                                               const std::vector<std::string> &map,
                                                int robots_size) {
     std::vector<int> move(robots_size * 2, 0);
     do {
@@ -184,8 +184,8 @@ void bfs_path_finder::set_task_plans(const std::map<std::vector<int>, std::vecto
 
 void bfs_path_finder::init_plans(const std::vector<robot> &robots,
                                  const std::vector<task> &tasks,
-                                 const std::vector<std::vector<bool>> &map) {
-    assert(robots.size() <= 26 && "You can't use more then 26 robots.\nEven on 10 it's nearly pointless.");
+                                 const std::vector<std::string> &map) {
+    assert(robots.size() <= 20 && "You can't use more then 20 robots.\nEven on 10 bfs is nearly pointless.");
     std::vector<task> tasks_vector = std::vector<task>(std::begin(tasks), std::end(tasks));
     std::map<std::vector<int>, std::vector<int>> parent;
     parent[get_init_position_for_bfs(robots, tasks.size())] = get_init_position_for_bfs(robots, tasks.size());
@@ -193,8 +193,8 @@ void bfs_path_finder::init_plans(const std::vector<robot> &robots,
     que.push(get_init_position_for_bfs(robots, tasks.size()));
     std::vector<int> now;
     while(!que.empty()) {
-        if (rand() % 3000 == 0)
-            std::cout << "Que: " << que.size() << " Used: " << parent.size() << std::endl;
+        if (rand() % 10000 == 0)
+            std::cout << "OPEN: " << que.size() << " CLOSED: " << parent.size() << std::endl;
         now = que.front();
         que.pop();
         long long i = fast_pow(5, robots.size()) - 1;
@@ -223,7 +223,7 @@ void bfs_path_finder::init_plans(const std::vector<robot> &robots,
 
 void bfs_path_finder::get_moves(std::vector<robot> &robots,
                                 const std::vector<task> &tasks,
-                                const std::vector<std::vector<bool>> &map) {
+                                const std::vector<std::string> &map) {
     for (int i = 0; i < robots.size() ;i++) {
         if (!path_plans[i].empty()) {
             robots[i].move_coord1 = path_plans[i].front().first;
@@ -235,7 +235,7 @@ void bfs_path_finder::get_moves(std::vector<robot> &robots,
 
 void bfs_path_finder::get_tasks_to_robots(std::vector<robot> &robots,
                                           std::vector<task> &tasks,
-                                          const std::vector<std::vector<bool>> &map) {
+                                          const std::vector<std::string> &map) {
     for (int i = 0; i < robots.size(); i++) {
         if (robots[i].job == nullptr && !task_plans[i].empty()) {
             if (!task_plans[i].empty()) {

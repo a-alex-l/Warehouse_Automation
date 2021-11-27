@@ -7,6 +7,7 @@ find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 
 add_executable(main
         main.cpp
+        constants.h
 
         environment/include/task.h
         environment/include/game.h

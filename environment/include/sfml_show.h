@@ -7,7 +7,7 @@
 #include "../include/robot.h"
 #include "../include/task.h"
 
-void show(std::vector<std::vector<bool>> map,
+void show(std::vector<std::string> map,
           std::vector<robot> robots,
           std::vector<task> tasks) {
     std::cout << "Show." << std::endl;
@@ -29,11 +29,18 @@ void show(std::vector<std::vector<bool>> map,
             for (int j = 0; j < 1 + 30 * map[0].size(); j += 30)
                 image_board.setPixel(j, i, sf::Color(100, 100, 100));
         for (int i = 0; i < map.size(); i++)
-            for (int j = 0; j < map[0].size(); j++)
-                if (map[i][j])
-                    for (int coord1 = 1 + 30 * i; coord1 < 30 * (i + 1); coord1++)
-                        for (int coord2 = 1 + 30 * j; coord2 < 30 * (j + 1); coord2++)
-                            image_board.setPixel(coord2, coord1, sf::Color(150, 150, 150));
+            for (int j = 0; j < map[0].size(); j++) {
+                sf::Color color = sf::Color(255, 255, 255); // '.'
+                if (map[i][j] == '#')
+                    color = sf::Color(150, 150, 150);
+                if (map[i][j] == '_')
+                    color = sf::Color(200, 200, 255);
+                if (map[i][j] == 's')
+                    color = sf::Color(200, 255, 200);
+                for (int coord1 = 1 + 30 * i; coord1 < 30 * (i + 1); coord1++)
+                    for (int coord2 = 1 + 30 * j; coord2 < 30 * (j + 1); coord2++)
+                        image_board.setPixel(coord2, coord1, color);
+            }
         texture_board.loadFromImage(image_board);
         board.setTexture(texture_board);
 

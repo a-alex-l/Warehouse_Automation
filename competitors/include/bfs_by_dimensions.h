@@ -22,17 +22,17 @@ public:
     // time = (2 ^ tasks.size) * (map.area ^ robots.size) * (5 ^ robots.size)
     void init_plans(const std::vector<robot> &robots,
                     const std::vector<task> &tasks,
-                    const std::vector<std::vector<bool>> &map) override;
+                    const std::vector<std::string> &map) override;
 
     // time = robots.size
     void get_moves(std::vector<robot> &robots,
                    const std::vector<task> &tasks,
-                   const std::vector<std::vector<bool>> &map) override;
+                   const std::vector<std::string> &map) override;
 
     // time = robots.size
     void get_tasks_to_robots(std::vector<robot> &robots,
                              std::vector<task> &tasks,
-                             const std::vector<std::vector<bool>> &map) override;
+                             const std::vector<std::string> &map) override;
 };
 
 #endif //WAREHOUSE_AUTOMATION_BFS_BY_DIMENSIONS_H
