@@ -52,6 +52,9 @@ static bool can_move_with(const std::vector<int> &now,
     for (int i = 0; i < move.size(); i += 2) {
         if (map[now[i] + move[i]][now[i + 1] + move[i + 1]] == '#')
             return false;
+        if (map[now[i] + move[i]][now[i + 1] + move[i + 1]] == 's' &&
+                map[now[i]][now[i + 1]] == 's')
+            return false;
     }
     for (int i = 0; i < move.size(); i += 2) {
         for (int j = i + 2; j < move.size(); j += 2) {

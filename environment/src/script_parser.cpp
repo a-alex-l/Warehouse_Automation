@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <set>
 
 void parse(const std::string &file_name,
            std::vector<std::string> &map,
@@ -44,10 +45,13 @@ void parse(const std::string &file_name,
     if (tasks.empty()) {
         tasks.resize(TASKS_COUNT);
         robots.resize(ROBOTS_COUNT);
+        std::set<std::pair<int, int>> used_places;
         for (auto &robot : robots) {
             robot.coord1 = rand() % map.size(), robot.coord2 = rand() % map[0].size();
-            while (map[robot.coord1][robot.coord2] == '#')
+            while (map[robot.coord1][robot.coord2] == '#' or
+                    used_places.find(std::make_pair(robot.coord1, robot.coord2)) != used_places.end())
                 robot.coord1 = rand() % map.size(), robot.coord2 = rand() % map[0].size();
+            used_places.insert(std::make_pair(robot.coord1, robot.coord2));
         }
         std::vector<std::pair<int, int>> points__, points_s;
         for (int i = 0; i < map.size(); i++)

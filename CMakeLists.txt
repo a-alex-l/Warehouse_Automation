@@ -21,7 +21,7 @@ add_executable(main
         competitors/include/bfs_by_dimensions.h
         competitors/include/path_from_file_reader.h
         competitors/src/bfs_by_dimensions.cpp
-        competitors/src/path_from_file_reader.cpp)
+        competitors/src/path_from_file_reader.cpp competitors/include/cbs.h competitors/src/cbs.cpp competitors/include/ca_star.h competitors/include/pbs.h competitors/src/ca_star.cpp competitors/src/pbs.cpp)
 
 target_link_libraries(main sfml-graphics sfml-audio)
 
