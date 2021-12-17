@@ -1,7 +1,11 @@
 #ifndef WAREHOUSE_AUTOMATION_CBS_H
 #define WAREHOUSE_AUTOMATION_CBS_H
 
+#include <boost/heap/fibonacci_heap.hpp>
+#include <boost/unordered_set.hpp>
+
 #include "path_finder.h"
+#include "base_mapf.h"
 #include "cbs_node.h"
 
 #include <memory>
@@ -27,7 +31,7 @@ class cbs_path_finder : public path_finder {
 };
 
 
-class CBS {
+class CBS : public MAPFSolver {
     public:
         bool solution_found;
         double solution_cost;
@@ -41,14 +45,15 @@ class CBS {
             int time_limit
             );
 
-        // CBS(const Graph& G, SingleSolver& path_planner);
+        CBS(const Map& map, SingleAgentSolver& path_planner);
         ~CBS();
 
         void update_paths(CBSNode* node);
         void find_conflicts(int start_time, std::vector< std::shared_ptr <Conflict> >& conflicts) const;
     private:
-        // open_list
-        // close_list
+        typedef boost::heap::fibonacci_heap< Node* > heap_open_t;
+        heap_open_t open;
+        boost::unordered_set<Node*> close;
 
         std::vector<Path*> paths;
         int number_of_agents;
