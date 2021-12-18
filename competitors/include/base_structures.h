@@ -35,14 +35,14 @@ struct Path {
 
 struct Constraint {
     int agent_id;
-    int location;
+    std::pair<int, int> location;
     int timestemp;   
 };
 
 struct Conflict {
     int first_agent_id;
     int second_agent_id;
-    int first_location;
-    int second_location;
+    std::pair<int, int> first_location;
+    std::pair<int, int> second_location;
     int timestemp;   
 };

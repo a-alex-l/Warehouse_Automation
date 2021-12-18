@@ -8,9 +8,9 @@ class Map {
         int height;
         std::vector< std::vector<Node> > nodes;
 
-        bool is_bounds(int i, int j);
-        bool traversable(int i, int j);
+        bool in_bounds(std::pair<int, int> location);
+        bool traversable(std::pair<int, int> location);
 
-        std::vector<Node> get_neighbors(int i, int j);
-        double compute_cost(int i1, int j1, int i2, int j2);
+        std::vector< std::pair<int, int> > get_neighbors(std::pair<int, int> location);
+        double compute_cost(std::pair<int, int> location1, std::pair<int, int> location2);
 };
