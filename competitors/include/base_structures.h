@@ -1,8 +1,22 @@
 #pragma once
 #include <vector>
 
+struct Location {
+    int x;
+    int y;
+    Location(int x, int y): x(x), y(y) {}
+
+    bool operator == (const Location& other) {
+        return x == other.x && y == other.y;
+    }
+
+    bool operator != (const Location& other) {
+        return x != other.x || y != other.y;
+    }
+};
+
 struct State {
-    int location;
+    Location location;
     int timestamp;
     
     void operator = (const State& other) {
@@ -18,12 +32,8 @@ struct State {
         return location != other.location || timestamp != other.timestamp;
     }
 
-    State(): location(-1), timestamp(-1) {}
-    explicit State(int location, int timestamp = -1): location(location), timestamp(timestamp) {}
-    State(const State& other) {
-        location = other.location;
-        timestamp = other.timestamp;
-    }
+    State(): location(Location(-1, -1)), timestamp(-1) {}
+    explicit State(Location location, int timestamp = -1): location(location), timestamp(timestamp) {}
 };
 
 struct Path {
@@ -35,14 +45,14 @@ struct Path {
 
 struct Constraint {
     int agent_id;
-    std::pair<int, int> location;
+    Location location;
     int timestemp;   
 };
 
 struct Conflict {
     int first_agent_id;
     int second_agent_id;
-    std::pair<int, int> first_location;
-    std::pair<int, int> second_location;
+    Location first_location;
+    Location second_location;
     int timestemp;   
 };

@@ -1,5 +1,5 @@
 #include <cstdint>
-#include "map.h"
+#include "basic_graph.h"
 
 class SingleAgentSolver {
     public:
@@ -11,14 +11,15 @@ class SingleAgentSolver {
         double min_f_value;
 
         double compute_h_value(
-                const Map& map,
-                const State& start,
-                const std::vector< std::pair <int, int> > goals) const;
+                const BasicGraph& graph,
+                const int current_goal_num,
+                const int goal_id,
+                const std::vector<Location>& goals) const;
 
         virtual Path run(
-                const Map& map,
+                const BasicGraph& graph,
                 const State& start,
-                const std::vector< std::pair <int, int> > goals) = 0;
+                const std::vector<Location> goals) = 0;
 
         SingleAgentSolver(): suboptimal_bound(1), num_expanded(0), num_generated(0), path_cost(0), min_f_value(0) {};
 };
