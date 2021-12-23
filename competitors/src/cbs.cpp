@@ -3,6 +3,7 @@
 #include "../../constants.h"
 
 #include <iostream>
+#include <stdexcept>
 
 
 CBSNode cbs_path_finder::get_CBSNode(const std::set<Constraint> &constraints,
@@ -82,7 +83,7 @@ static std::pair<std::vector<Constraint>, std::vector<EdgeConstraint>> validate_
                 if (j.second.size() != 1) {
                     std::vector<EdgeConstraint> edge_constraints;
                     for (int k : j.second)
-                        edge_constraints.emplace_back(k, j.first.first, j.first.second, i);
+                        edge_constraints.emplace_back(k, paths[k].locations[i - 1], paths[k].locations[i], i);
                     return {{}, edge_constraints};
                 }
             }
@@ -105,13 +106,12 @@ void cbs_path_finder::init_plans(const std::vector<robot> &robots,
         nodes.insert(get_CBSNode(std::set<Constraint>(), std::set<EdgeConstraint>(),
                 robots, tasks, map));
     }
-    while (true) {
+    while (!nodes.empty()) {
         CBSNode node = *nodes.begin();
         std::cout << node;
         if (node.is_valid) {
             auto constrs = validate_paths(node.paths, step);
             if (!constrs.first.empty()) {
-                std::cout << "NOOOOOpeee!\n\n";
                 nodes.erase(nodes.begin());
                 for (auto constr: constrs.first) {
                     std::set<Constraint> new_constraints = node.constraints;
@@ -131,6 +131,8 @@ void cbs_path_finder::init_plans(const std::vector<robot> &robots,
             } else break;
         } else nodes.erase(nodes.begin());
     }
+    if (nodes.empty())
+        throw std::runtime_error("Error: No solution found!");
 }
 
 void cbs_path_finder::get_moves(std::vector<robot> &robots,

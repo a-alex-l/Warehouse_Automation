@@ -10,7 +10,9 @@ struct NodePtrOpenComparator {
         return l_node->f < r_node->f ||
                (l_node->f == r_node->f &&
                 (l_node->location.x < r_node->location.x ||
-                 (l_node->location.x == r_node->location.x && l_node->location.y < r_node->location.y)));
+                 (l_node->location.x == r_node->location.x &&
+                  (l_node->location.y < r_node->location.y ||
+                   (l_node->location.y == r_node->location.y && l_node->g < r_node->g)))));
     }
 };
 
@@ -52,7 +54,9 @@ struct Open {
 struct NodePtrClosedComparator {
     bool operator()(const Node* l_node, const Node* r_node) const  {
         return l_node->location.x < r_node->location.x ||
-               (l_node->location.x == r_node->location.x && l_node->location.y < r_node->location.y);
+               (l_node->location.x == r_node->location.x &&
+               (l_node->location.y < r_node->location.y ||
+               (l_node->location.y == r_node->location.y && l_node->g < r_node->g)));
     }
 };
 

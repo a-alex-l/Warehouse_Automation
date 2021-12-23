@@ -25,7 +25,7 @@ class CBSNode {
     }
 
     friend std::ostream &operator<<(std::ostream &os, CBSNode const &node) {   //for debug
-        os << "good? = " << node.is_valid << "\n";
+        os << "good? = " << node.is_valid << ", cost = " << node.cost << "\n";
         for (auto i : node.constraints)
             os << "(" << i.agent_id << " # " << i.location.x << ", " << i.location.y << " | " << i.timestemp << ") ";
         os << "\n";
