@@ -29,7 +29,7 @@ $ sudo pacman -S sfml
 $ cmake .
 $ make
 ```
-And after
+And then
 
 ```
 $ ./main <map_file> <bfs | ...>
@@ -41,3 +41,5 @@ $ ./main <map_file> <bfs | ...>
 $ ./main ../tests/tests_scripts/map0.txt bfs
 ```
 
+### Original article
+https://aaai.org/AAAI21Papers/AAAI-563.LiJ.pdf
