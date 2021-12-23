@@ -33,7 +33,7 @@ $ make main
 And then
 
 ```
-$ ./main <map_file> <bfs | cbs>
+$ ./main <map_file> <bfs | cbs | ca_star>
 ```
 
 #### Example:
