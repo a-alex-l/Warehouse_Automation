@@ -6,7 +6,7 @@
 struct Node {
     Node* parent;
     Location location;
-    double g;
+    int g;     // only +-1 by step
     double h;
     double f;
 

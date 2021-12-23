@@ -49,6 +49,9 @@ struct Constraint {
     Location location;
     int timestemp;
 
+    Constraint(int agent_id, Location location, int timestemp) :
+            agent_id(agent_id), location(location), timestemp(timestemp) {};
+
     bool operator < (const Constraint& other) const {  // for set
         return location < other.location ||
                 (location == other.location && (timestemp < other.timestemp ||
@@ -56,10 +59,18 @@ struct Constraint {
     }
 };
 
-struct Conflict {
-    int first_agent_id;
-    int second_agent_id;
+struct Conflict {    // edge constraint
+    int agent_id;
     Location first_location;
     Location second_location;
-    int timestemp;   
+    int timestemp;
+
+    Conflict(int agent_id, Location first_location, Location second_location, int timestemp) : agent_id(agent_id),
+            first_location(first_location), second_location(second_location), timestemp(timestemp) {};
+
+    bool operator < (const Constraint& other) const {  // for set
+        return location < other.location ||
+               (location == other.location && (timestemp < other.timestemp ||
+                                               (timestemp == other.timestemp && agent_id < other.agent_id)));
+    }
 };
