@@ -14,7 +14,7 @@ inline void init_run(int argc, char** argv, path_finder *path_maker, game &run) 
     if (argc == 3) {
         if (std::string(argv[2]) == "bfs")
             path_maker = new bfs_path_finder();
-        if (std::string(argv[2]) == "Cbs")
+        if (std::string(argv[2]) == "cbs")
             path_maker = new cbs_path_finder();
         if (std::string(argv[2]) == "read")
             path_maker = new path_from_file_reader(argv[1]);

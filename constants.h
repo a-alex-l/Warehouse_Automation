@@ -1,6 +1,6 @@
 
-const int TASKS_COUNT = 3;
-const int ROBOTS_COUNT = 2;
+const unsigned TASKS_COUNT = 3;
+const unsigned ROBOTS_COUNT = 2;
 
-const int HORIZON = 7;
-const int RECULC_PERIOD = 3;
+const unsigned HORIZON = 70;
+const unsigned RECULC_PERIOD = 40;

@@ -15,7 +15,7 @@ private:
     std::set<CBSNode> nodes;
     std::vector<int> which_robots_task;
     std::vector<std::deque<int>> task_plans;
-    int step = 0;
+    unsigned step = 0;
 
     CBSNode get_CBSNode(const std::set<Constraint> &constraints,
                         const std::set<EdgeConstraint> &edge_constraints,

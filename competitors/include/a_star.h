@@ -12,3 +12,9 @@ Path a_star(int agent_id, Location start, Location goal, unsigned init_cost,
             const std::set<Constraint> &constraints,
             const std::set<EdgeConstraint> &edge_constraints,
             const std::vector<std::string> &map);
+
+
+Path avoiding_step(int agent_id, Location point, unsigned init_cost,
+                   const std::set<Constraint> &constraints,
+                   const std::set<EdgeConstraint> &edge_constraints,
+                   const std::vector<std::string> &map);

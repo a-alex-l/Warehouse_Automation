@@ -7,11 +7,11 @@ struct Node {
     Node* parent;
     Location location;
     unsigned g;     // only +-1 by step
-    double h;
-    double f;
+    unsigned h;
+    unsigned f;
 
     Node(Location location): parent(nullptr), location(location), g(0), h(0), f(0) {}
-    Node(Node* parent, Location location, unsigned g, double h): parent(parent), location(location), g(g), h(h), f(g+h) {}
+    Node(Node* parent, Location location, unsigned g, unsigned h): parent(parent), location(location), g(g), h(h), f(g+h) {}
     ~Node() {};
 
     bool operator < (const Node* other) const {
