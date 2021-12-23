@@ -26,19 +26,20 @@ $ sudo pacman -S sfml
 ### Run
 
 ```
+$ cd build/
 $ cmake .
-$ make
+$ make main
 ```
 And then
 
 ```
-$ ./main <map_file> <bfs | ...>
+$ ./main <map_file> <bfs | cbs | ca_star>
 ```
 
 #### Example:
 
 ```
-$ ./main ../tests/tests_scripts/map0.txt bfs
+$ ./main ../tests/tests_scripts/map0.txt cbs
 ```
 
 ### Original article

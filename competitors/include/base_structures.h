@@ -39,20 +39,20 @@ struct Path {
 struct Constraint {
     int agent_id = -1;
     Location location;
-    int timestemp = -1;
+    int timestamp = -1;
 
     Constraint() = default;
-    Constraint(int agent_id, Location location, int timestemp) :
-            agent_id(agent_id), location(location), timestemp(timestemp) {};
+    Constraint(int agent_id, Location location, int timestamp) :
+            agent_id(agent_id), location(location), timestamp(timestamp) {};
 
     bool operator < (const Constraint& other) const {  // for set
         return location < other.location ||
-                (location == other.location && (timestemp < other.timestemp ||
-                    (timestemp == other.timestemp && agent_id < other.agent_id)));
+                (location == other.location && (timestamp < other.timestamp ||
+                                                (timestamp == other.timestamp && agent_id < other.agent_id)));
     }
 
     bool operator == (const Constraint& other) const {  // for set == set
-        return location == other.location && timestemp == other.timestemp && agent_id == other.agent_id;
+        return location == other.location && timestamp == other.timestamp && agent_id == other.agent_id;
     }
 };
 
@@ -60,21 +60,21 @@ struct EdgeConstraint {
     int agent_id = -1;
     Location first_location;
     Location second_location;
-    int timestemp = -1;
+    int timestamp = -1;
 
     EdgeConstraint() = default;
-    EdgeConstraint(int agent_id, Location first_location, Location second_location, int timestemp) : agent_id(agent_id),
-            first_location(first_location), second_location(second_location), timestemp(timestemp) {};
+    EdgeConstraint(int agent_id, Location first_location, Location second_location, int timestamp) : agent_id(agent_id),
+                                                                                                     first_location(first_location), second_location(second_location), timestamp(timestamp) {};
 
     bool operator < (const EdgeConstraint& other) const {  // for set
         return first_location < other.first_location ||
-               (first_location == other.first_location && (timestemp < other.timestemp ||
-               (timestemp == other.timestemp && (agent_id < other.agent_id ||
-               (agent_id == other.agent_id && second_location < other.second_location)))));
+               (first_location == other.first_location && (timestamp < other.timestamp ||
+                                                           (timestamp == other.timestamp && (agent_id < other.agent_id ||
+                                                                                             (agent_id == other.agent_id && second_location < other.second_location)))));
     }
 
     bool operator == (const EdgeConstraint& other) const {  // for set == set
-        return first_location == other.first_location && timestemp == other.timestemp &&
+        return first_location == other.first_location && timestamp == other.timestamp &&
                agent_id == other.agent_id && second_location == other.second_location;
     }
 };
@@ -84,5 +84,5 @@ struct Conflict {    // edge constraint
     int second_agent_id;
     Location first_location;
     Location second_location;
-    int timestemp;
+    int timestamp;
 };
