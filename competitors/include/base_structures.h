@@ -63,8 +63,8 @@ struct EdgeConstraint {
             first_location(first_location), second_location(second_location), timestemp(timestemp) {};
 
     bool operator < (const EdgeConstraint& other) const {  // for set
-        return first_location < other.location ||
-               (first_location == other.location && (timestemp < other.timestemp ||
+        return first_location < other.first_location ||
+               (first_location == other.first_location && (timestemp < other.timestemp ||
                (timestemp == other.timestemp && (agent_id < other.agent_id ||
                (agent_id == other.agent_id && second_location < other.second_location)))));
     }

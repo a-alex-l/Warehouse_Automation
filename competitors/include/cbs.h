@@ -2,18 +2,19 @@
 #define WAREHOUSE_AUTOMATION_CBS_H
 
 #include "path_finder.h"
-#include "base_mapf.h"
 #include "cbs_node.h"
 
 #include <memory>
 #include <vector>
 #include <set>
+#include <deque>
 
  
 class cbs_path_finder : public path_finder {
 private:
     std::set<CBSNode> nodes;
     std::vector<int> which_robots_task;
+    std::vector<std::deque<int>> task_plans;
     int step = 0;
 
     CBSNode get_CBSNode(const std::set<Constraint> &constraints,

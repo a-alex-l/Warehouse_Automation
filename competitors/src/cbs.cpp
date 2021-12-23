@@ -35,14 +35,15 @@ CBSNode cbs_path_finder::get_CBSNode(const std::set<Constraint> &constraints,
 }
 
 
-static std::pair<std::vector<Constraint>, std::vector<EdgeConstraint>> validate_paths(std::vector<Path> paths) {
-    size_t max_len = 0;
+static std::pair<std::vector<Constraint>, std::vector<EdgeConstraint>> validate_paths(
+            std::vector<Path> paths, int step) {
+    size_t max_len = step + HORIZON;
     for (auto & path : paths)
         max_len = std::max(max_len, path.locations.size());
-    for (int i = 0; i < max_len; i++) {
+    for (int i = step; i < max_len; i++) {
         std::map<Location, std::vector<int>> locations;
         for (int j = 0; j < paths.size(); j++) {
-            locations[paths[i].locations[j]].push_back(j);
+            locations[paths[j].locations[i]].push_back(j);
         }
         if (locations.size() != paths.size()) {
             for (std::pair<Location, std::vector<int>> j : locations) {
@@ -55,22 +56,20 @@ static std::pair<std::vector<Constraint>, std::vector<EdgeConstraint>> validate_
             }
         }
     }
-    for (int i = 1; i < max_len; i++) {
+    for (int i = step + 1; i < max_len; i++) {
         std::map<std::pair<Location, Location>, std::vector<int>> locations;
-        unsigned right_size = 0;
         for (int j = 0; j < paths.size(); j++) {
-            if (paths[j].locations.size() < i) {
-                right_size++;
-                locations[paths[i].locations[j]].push_back(j);
-            }
+            Location first_location = paths[j].locations[i - 1];
+            Location second_location = paths[j].locations[i];
+            locations[std::make_pair(first_location, second_location)].push_back(j);
         }
-        if (locations.size() != right_size) {
-            for (std::pair<Location, std::vector<int>> j : locations) {
+        if (locations.size() != paths.size()) {
+            for (std::pair<std::pair<Location, Location>, std::vector<int>> j : locations) {
                 if (j.second.size() != 1) {
-                    std::vector<Constraint> constraints;
+                    std::vector<EdgeConstraint> edge_constraints;
                     for (int k : j.second)
-                        constraints.emplace_back(k, j.first, i);
-                    return {constraints, {}};
+                        edge_constraints.emplace_back(k, j.first.first, j.first.second, i);
+                    return {{}, edge_constraints};
                 }
             }
         }
@@ -84,15 +83,35 @@ void cbs_path_finder::init_plans(const std::vector<robot> &robots,
                                  const std::vector<std::string> &map) {
     if (which_robots_task.empty()) {
         which_robots_task.resize(tasks.size());
-        for (unsigned i = 0; i < tasks.size(); i++)
+        task_plans.resize(robots.size());
+        for (unsigned i = 0; i < tasks.size(); i++) {
             which_robots_task[i] = int(i % robots.size());
-        nodes.insert(get_CBSNode(std::set<Constraint>(), std::set<EdgeConstraint>(), robots, tasks, map));
+            task_plans[int(i % robots.size())].push_back(i);
+        }
+        nodes.insert(get_CBSNode(std::set<Constraint>(), std::set<EdgeConstraint>(),
+                robots, tasks, map));
     }
     while (true) {
         CBSNode node = *nodes.begin();
-        nodes.erase(nodes.begin());
+        auto constrs = validate_paths(node.paths, step);
+        if (!constrs.first.empty()) {
+            nodes.erase(nodes.begin());
+            for (auto constr : constrs.first) {
+                std::set<Constraint> new_constraints = node.constraints;
+                new_constraints.insert(constr);
+                nodes.insert(get_CBSNode(new_constraints, node.edge_constraints,
+                                         robots, tasks, map));
+            }
 
-
+        } else if (!constrs.second.empty()) {
+            nodes.erase(nodes.begin());
+            for (auto constr : constrs.second) {
+                std::set<EdgeConstraint> new_edge_constraints = node.edge_constraints;
+                new_edge_constraints.insert(constr);
+                nodes.insert(get_CBSNode(node.constraints, new_edge_constraints,
+                                         robots, tasks, map));
+            }
+        } else break;
     }
 }
 
@@ -114,5 +133,12 @@ void cbs_path_finder::get_moves(std::vector<robot> &robots,
 void cbs_path_finder::get_tasks_to_robots(std::vector<robot> &robots,
                                           std::vector<task> &tasks,
                                           const std::vector<std::string> &map) {
-
+    for (int i = 0; i < robots.size(); i++) {
+        if (robots[i].job == nullptr && !task_plans[i].empty()) {
+            if (!task_plans[i].empty()) {
+                robots[i].job = &tasks[task_plans[i].front()];
+                task_plans[i].pop_front();
+            }
+        }
+    }
 }
