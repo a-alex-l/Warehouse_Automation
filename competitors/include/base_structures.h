@@ -52,7 +52,7 @@ struct Constraint {
     }
 
     bool operator == (const Constraint& other) const {  // for set == set
-        return location == other.location && timestemp == other.timestemp && agent_id == other.agent_id;
+        return location == other.location && timestamp == other.timestamp && agent_id == other.agent_id;
     }
 };
 
@@ -74,7 +74,7 @@ struct EdgeConstraint {
     }
 
     bool operator == (const EdgeConstraint& other) const {  // for set == set
-        return first_location == other.first_location && timestemp == other.timestemp &&
+        return first_location == other.first_location && timestamp == other.timestamp &&
                agent_id == other.agent_id && second_location == other.second_location;
     }
 };

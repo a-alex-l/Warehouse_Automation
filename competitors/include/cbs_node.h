@@ -1,3 +1,6 @@
+#ifndef WAREHOUSE_AUTOMATION_CBS_NODE_H
+#define WAREHOUSE_AUTOMATION_CBS_NODE_H
+
 #include "base_structures.h"
 
 #include <memory>
@@ -43,3 +46,5 @@ class CBSNode {
         return  os << "------------------\n";
     }
 };
+
+#endif //WAREHOUSE_AUTOMATION_CBS_NODE_H
