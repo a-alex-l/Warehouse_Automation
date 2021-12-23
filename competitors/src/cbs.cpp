@@ -45,12 +45,13 @@ CBSNode cbs_path_finder::get_CBSNode(const std::set<Constraint> &constraints,
     }
     for (int i = 0; i < robots.size(); i++) {
         while (cost >= paths[i].locations.size()) {
-            Path path_from = avoiding_step(i, paths[i].locations.back(), paths[i].locations.size() - 1,
+            Path path_avoid = avoiding_step(i, paths[i].locations.back(), paths[i].locations.size() - 1,
                                            constraints, edge_constraints, map);
-            if (path_from.locations.size() == 1)
-                paths[i].locations.push_back(path_from.locations[0]);
-            else
-                paths[i].add(path_from);
+            paths[i].add(path_avoid);
+            if (path_avoid.locations.empty()) {
+                is_valid = false;
+                break;
+            }
         }
         paths[i].locations.resize(cost + 1);
     }
@@ -117,27 +118,28 @@ void cbs_path_finder::init_plans(const std::vector<robot> &robots,
     while (!nodes.empty()) {
         CBSNode node = *nodes.begin();
         std::cout << node;
-        if (node.is_valid) {
-            auto constrs = validate_paths(node.paths, step);
-            if (!constrs.first.empty()) {
-                nodes.erase(nodes.begin());
-                for (auto constr: constrs.first) {
-                    std::set<Constraint> new_constraints = node.constraints;
-                    new_constraints.insert(constr);
-                    CBSNode new_node = get_CBSNode(new_constraints, node.edge_constraints,
-                                                   robots, tasks, map);
+        auto constrs = validate_paths(node.paths, step);
+        if (!constrs.first.empty()) {
+            nodes.erase(nodes.begin());
+            for (auto constr: constrs.first) {
+                std::set<Constraint> new_constraints = node.constraints;
+                new_constraints.insert(constr);
+                CBSNode new_node = get_CBSNode(new_constraints, node.edge_constraints,
+                                               robots, tasks, map);
+                if (new_node.is_valid)
                     nodes.insert(new_node);
-                }
-            } else if (!constrs.second.empty()) {
-                nodes.erase(nodes.begin());
-                for (auto constr: constrs.second) {
-                    std::set<EdgeConstraint> new_edge_constraints = node.edge_constraints;
-                    new_edge_constraints.insert(constr);
-                    nodes.insert(get_CBSNode(node.constraints, new_edge_constraints,
-                                             robots, tasks, map));
-                }
-            } else break;
-        } else nodes.erase(nodes.begin());
+            }
+        } else if (!constrs.second.empty()) {
+            nodes.erase(nodes.begin());
+            for (auto constr: constrs.second) {
+                std::set<EdgeConstraint> new_edge_constraints = node.edge_constraints;
+                new_edge_constraints.insert(constr);
+                CBSNode new_node = get_CBSNode(node.constraints, new_edge_constraints,
+                                               robots, tasks, map);
+                if (new_node.is_valid)
+                    nodes.insert(new_node);
+            }
+        } else break;
     }
     if (nodes.empty())
         throw std::runtime_error("Error: No solution found!");

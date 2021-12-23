@@ -8,8 +8,8 @@
 #include "../include/task.h"
 
 void show(std::vector<std::string> map,
-          std::vector<robot> robots,
-          std::vector<task> tasks) {
+          const std::vector<robot>& robots,
+          const std::vector<task>& tasks) {
     std::cout << "Show." << std::endl;
     static sf::RenderWindow* window = nullptr;
     static sf::Sprite board, robot;

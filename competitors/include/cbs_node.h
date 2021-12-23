@@ -21,7 +21,9 @@ class CBSNode {
     ~CBSNode() = default;
 
     bool operator < (const CBSNode& other) const {  // for set
-        return cost < other.cost;
+        return cost < other.cost || (cost == other.cost &&
+                                     (constraints < other.constraints || (constraints == other.constraints &&
+                                                                          edge_constraints < other.edge_constraints)));
     }
 
     friend std::ostream &operator<<(std::ostream &os, CBSNode const &node) {   //for debug

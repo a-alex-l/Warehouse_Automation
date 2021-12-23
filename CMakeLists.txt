@@ -31,7 +31,6 @@ add_executable(main
 
         competitors/src/bfs_by_dimensions.cpp
         competitors/src/cbs.cpp
-        competitors/src/pbs.cpp
         competitors/src/ca_star.cpp
         competitors/src/a_star.cpp
         competitors/src/path_from_file_reader.cpp)
@@ -61,7 +60,6 @@ add_executable(test
 
         competitors/src/bfs_by_dimensions.cpp
         competitors/src/cbs.cpp
-        competitors/src/pbs.cpp
         competitors/src/ca_star.cpp
         competitors/src/a_star.cpp
         competitors/src/path_from_file_reader.cpp)

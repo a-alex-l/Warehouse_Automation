@@ -50,6 +50,10 @@ struct Constraint {
                 (location == other.location && (timestemp < other.timestemp ||
                     (timestemp == other.timestemp && agent_id < other.agent_id)));
     }
+
+    bool operator == (const Constraint& other) const {  // for set == set
+        return location == other.location && timestemp == other.timestemp && agent_id == other.agent_id;
+    }
 };
 
 struct EdgeConstraint {
@@ -67,6 +71,11 @@ struct EdgeConstraint {
                (first_location == other.first_location && (timestemp < other.timestemp ||
                (timestemp == other.timestemp && (agent_id < other.agent_id ||
                (agent_id == other.agent_id && second_location < other.second_location)))));
+    }
+
+    bool operator == (const EdgeConstraint& other) const {  // for set == set
+        return first_location == other.first_location && timestemp == other.timestemp &&
+               agent_id == other.agent_id && second_location == other.second_location;
     }
 };
 
