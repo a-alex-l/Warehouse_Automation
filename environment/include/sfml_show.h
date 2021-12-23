@@ -87,7 +87,7 @@ void show(std::vector<std::string> map,
                 }
             }
             window->display();
-            sf::sleep(sf::milliseconds(15));
+            sf::sleep(sf::milliseconds(5));
         }
     }
 }

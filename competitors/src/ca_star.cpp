@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 
 
 
@@ -161,8 +162,10 @@ void ca_star_path_finder::init_plans(const std::vector<robot> &robots,
             }
         } else break;
     }
-    if (nodes.empty())
-        throw std::runtime_error("Error: No solution found!");
+    if (nodes.empty()) {
+        std::random_shuffle(priorities.begin(), priorities.end());
+        init_plans(robots, tasks, map);
+    }
 }
 
 void ca_star_path_finder::get_moves(std::vector<robot> &robots,

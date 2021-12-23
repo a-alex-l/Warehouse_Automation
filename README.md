@@ -42,5 +42,9 @@ $ ./main <map_file> <bfs | cbs | ca_star>
 $ ./main ../tests/tests_scripts/map0.txt cbs
 ```
 
+#### cbs VS ca_star:
+
+https://github.com/a-alex-l/Warehouse_Automation/blob/main/assets/cbs_vs_ca_star.mp4
+
 ### Original article
 https://aaai.org/AAAI21Papers/AAAI-563.LiJ.pdf
