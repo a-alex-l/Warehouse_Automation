@@ -117,7 +117,7 @@ void cbs_path_finder::init_plans(const std::vector<robot> &robots,
                              robots, tasks, map));
     while (!nodes.empty()) {
         CBSNode node = *nodes.begin();
-        std::cout << node;
+        std::cout <<  "Searching cost = " << node.cost << ", nodes now = " << nodes.size() << "\n"; //node;
         auto constrs = validate_paths(node.paths, step);
         if (!constrs.first.empty()) {
             nodes.erase(nodes.begin());
