@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 
+
 CBSNode ca_star_path_finder::get_CBSNode(const std::set<Constraint> &constraints,
                                      const std::set<EdgeConstraint> &edge_constraints,
                                      const std::vector<robot> &robots,
@@ -62,9 +63,6 @@ CBSNode ca_star_path_finder::get_CBSNode(const std::set<Constraint> &constraints
 static std::pair<std::vector<Constraint>, std::vector<EdgeConstraint>> validate_paths(
         std::vector<Path> paths, unsigned step, std::vector<int> priorities) {
     size_t max_len = std::min(step + HORIZON, unsigned(paths[0].locations.size()));
-    for (auto & path : paths)
-        max_len = std::max(max_len, path.locations.size());
-
     for (unsigned i = step; i < max_len; i++) {
         std::map<Location, std::vector<int>> locations;
         for (int j = 0; j < paths.size(); j++) {
@@ -108,11 +106,7 @@ static std::pair<std::vector<Constraint>, std::vector<EdgeConstraint>> validate_
                             max_prior_agent = k;
                         }
                     }
-                    edge_constraints.emplace_back(
-                            max_prior_agent,
-                            paths[max_prior_agent].locations[i - 1],
-                            paths[max_prior_agent].locations[i],
-                            i);
+                    edge_constraints.emplace_back(max_prior_agent, paths[max_prior_agent].locations[i - 1], paths[max_prior_agent].locations[i], i);
                     return {{}, edge_constraints};
                 }
             }
@@ -129,10 +123,13 @@ void ca_star_path_finder::init_plans(const std::vector<robot> &robots,
         which_robots_task.resize(tasks.size());
         task_plans.resize(robots.size());
         priorities.resize(robots.size());
+        for (int i = 0; i < priorities.size(); i++) {
+            priorities[i] = i;
+        }
+
         for (unsigned i = 0; i < tasks.size(); i++) {
             which_robots_task[i] = int(i % robots.size());
             task_plans[int(i % robots.size())].push_back(i);
-            priorities[i] = i;
         }
     }
     nodes.clear();
@@ -171,8 +168,10 @@ void ca_star_path_finder::init_plans(const std::vector<robot> &robots,
 void ca_star_path_finder::get_moves(std::vector<robot> &robots,
                                 const std::vector<task> &tasks,
                                 const std::vector<std::string> &map) {
-    if (step % RECULC_PERIOD == RECULC_PERIOD - 1)
+    if (step % RECULC_PERIOD == RECULC_PERIOD - 1) {
+        step = 0;
         init_plans(robots, tasks, map);
+    }
     const CBSNode *best_node = &*nodes.begin();
     for (int i = 0; i < robots.size(); i++) {
         if (!best_node->paths[i].empty()) {
