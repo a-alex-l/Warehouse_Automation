@@ -89,7 +89,7 @@ static std::vector<Node> get_neighbours(int agent_id, Node* node, Location goal,
                                         const std::set<EdgeConstraint> &edge_constraints,
                                         const std::vector<std::string> &map) {
     std::vector<Node> nodes = {*node, *node, *node, *node, *node};
-    nodes[4].location.x++, nodes[1].location.x--, nodes[2].location.y++, nodes[3].location.y--;
+    nodes[1].location.x++, nodes[2].location.x--, nodes[3].location.y++, nodes[4].location.y--;
     nodes[0].g++, nodes[1].g++, nodes[2].g++, nodes[3].g++, nodes[4].g++;
     std::vector<bool> good(5, true);
     for (int i = 0; i < 5; i++) {

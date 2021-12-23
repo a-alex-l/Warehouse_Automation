@@ -1,6 +1,6 @@
 
-const unsigned TASKS_COUNT = 10;
+const unsigned TASKS_COUNT = 30;
 const unsigned ROBOTS_COUNT = 3;
 
-const unsigned HORIZON = 9;
-const unsigned RECULC_PERIOD = 4;
+const unsigned HORIZON = 6;
+const unsigned RECULC_PERIOD = 3;

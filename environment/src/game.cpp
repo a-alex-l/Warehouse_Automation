@@ -68,7 +68,7 @@ void game::move_robots() {
     for (auto &robot : robots) {
         assert((map[robot.coord1][robot.coord2] != 's' ||
                 map[robot.coord1 + robot.move_coord1][robot.coord2 + robot.move_coord2] != 's') &&
-                "Error: robot tried enter a wall!");
+                "Error: robot tried to go though shelf!");
         robot.coord1 += robot.move_coord1;
         robot.coord2 += robot.move_coord2;
         robot.move_coord1 = robot.move_coord2 = 0;

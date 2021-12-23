@@ -33,7 +33,8 @@ add_executable(main
         competitors/src/cbs.cpp
         competitors/src/pbs.cpp
         competitors/src/ca_star.cpp
-        competitors/src/path_from_file_reader.cpp competitors/include/cbs.h competitors/src/cbs.cpp competitors/include/ca_star.h competitors/include/pbs.h competitors/src/ca_star.cpp competitors/src/pbs.cpp competitors/src/a_star.cpp)
+        competitors/src/a_star.cpp
+        competitors/src/path_from_file_reader.cpp)
 
 target_link_libraries(main sfml-graphics sfml-audio)
 
@@ -62,7 +63,8 @@ add_executable(test
         competitors/src/cbs.cpp
         competitors/src/pbs.cpp
         competitors/src/ca_star.cpp
-        competitors/src/path_from_file_reader.cpp competitors/include/cbs.h competitors/src/cbs.cpp competitors/include/ca_star.h competitors/include/pbs.h competitors/src/ca_star.cpp competitors/src/pbs.cpp)
+        competitors/src/a_star.cpp
+        competitors/src/path_from_file_reader.cpp)
 
 
 target_link_libraries(test sfml-graphics sfml-audio)
