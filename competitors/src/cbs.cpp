@@ -136,8 +136,8 @@ void cbs_path_finder::init_plans(const std::vector<robot> &robots,
 void cbs_path_finder::get_moves(std::vector<robot> &robots,
                                 const std::vector<task> &tasks,
                                 const std::vector<std::string> &map) {
-    //if (step % RECULC_PERIOD == RECULC_PERIOD - 1)
-        //init_plans(robots, tasks, map);
+    if (step % RECULC_PERIOD == RECULC_PERIOD - 1)
+        init_plans(robots, tasks, map);
     const CBSNode *best_node = &*nodes.begin();
     for (int i = 0; i < robots.size(); i++) {
         if (!best_node->paths[i].empty()) {
