@@ -44,7 +44,7 @@ $ ./main ../tests/tests_scripts/map0.txt cbs
 
 #### cbs VS ca_star:
 
-https://github.com/a-alex-l/Warehouse_Automation/blob/main/assets/cbs_vs_ca_star.mp4
+https://user-images.githubusercontent.com/40340659/147300353-c58499dd-3bf8-4ada-b59c-4dbd6c277577.mp4
 
 ### Original article
 https://aaai.org/AAAI21Papers/AAAI-563.LiJ.pdf
