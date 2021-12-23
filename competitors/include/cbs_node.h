@@ -1,29 +1,25 @@
 #include "base_structures.h"
 
 #include <memory>
+#include <utility>
 #include <vector>
+#include <set>
 
 
 class CBSNode {
     public:
-        CBSNode* parent;
-        std::vector< Constraint > constraints;
-        std::vector< std::shared_ptr<Conflict >> conflicts;
-        std::vector<Path> paths;
+    std::set<Constraint> constraints;
+    std::set<EdgeConstraint> edge_constraints;
+    std::vector<Path> paths;  // all path must be the same len. If it turned out to be short add staying.
+    unsigned cost = 0;        // doesn't equal paths[any] len
 
-        double g;
-        double h;
-        double f;
-        double min_f;
+    CBSNode(std::set<Constraint> constraints, std::set<EdgeConstraint> edge_constraints,
+                    std::vector<Path> paths, unsigned cost = 0):
+            constraints(std::move(constraints)), edge_constraints(std::move(edge_constraints)),
+            paths(std::move(paths)), cost(cost) {}
+    ~CBSNode() = default;
 
-        size_t depth;
-        size_t window;
-
-        uint64_t time_expanded;
-        uint64_t time_generated;
-        int num_of_collisions;
-
-        CBSNode(): parent(nullptr), g(0), h(0), f(0), min_f(0), time_expanded(0), time_generated(0) {}
-        CBSNode(CBSNode* parent);
-        ~CBSNode() {};
+    bool operator < (const CBSNode& other) const {  // for set
+        return cost < other.cost;
+    }
 };

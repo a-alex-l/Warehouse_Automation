@@ -83,19 +83,20 @@ double get_diagonal_dist(Location start, Location goal) {
 
 
 std::vector<Node> get_neighbours(int agent_id, Node* node, Location goal,
-                                 std::set<Constraint> constraints,
-                                 std::set<Conflict> conflicts,
+                                 const std::set<Constraint> &constraints,
+                                 const std::set<EdgeConstraint> &edge_constraints,
                                  const std::vector<std::string> &map) {
     std::vector<Node> nodes = {*node, *node, *node, *node};
     nodes[0].location.x++,nodes[1].location.x--,nodes[2].location.y++,nodes[3].location.y--;
     nodes[0].g++,nodes[1].g++,nodes[2].g++,nodes[3].g++;
-    std::vector<bool> good(4, True);
+    std::vector<bool> good(4, true);
     for (int i = 0; i < 4; i++) {
         good[i] = good[i] && map[nodes[i].location.x][nodes[i].location.y] != '#';
         good[i] = good[i] && (map[nodes[i].location.x][nodes[i].location.y] != 's' ||
                               map[node->location.x][node->location.y] != 's');
         good[i] = good[i] && (constraints.find(Constraint(agent_id, nodes[i].location, nodes[i].g)) == constraints.end());
-        good[i] = good[i] && (conflicts.find(Conflict(agent_id, node->location, nodes[i].location, nodes[i].g)) == conflicts.end());
+        good[i] = good[i] && (edge_constraints.find(
+                EdgeConstraint(agent_id, node->location, nodes[i].location, nodes[i].g)) == edge_constraints.end());
     }
     std::vector<Node> ans;
     for (int i = 0; i< 4; i++)
@@ -107,25 +108,37 @@ std::vector<Node> get_neighbours(int agent_id, Node* node, Location goal,
 }
 
 
-std::pair<Node*, Closed> a_star(int agent_id,
-                                const std::vector<std::string> &map,
-                                Location start, Location goal,
-                                std::set<Conflict> conflicts,
-                                std::set<Constraint> constraints) {
+Path make_path(int agent_id, Node* node, Closed closed) {
+    Path ans;
+    ans.agent_id = agent_id;
+    if (node == nullptr)
+        return ans;
+    while (node != nullptr) {
+        ans.locations.push_back(node->location);
+        node = node->parent;
+    }
+    return ans;
+}
+
+
+Path a_star(int agent_id, Location start, Location goal, unsigned init_cost,
+            const std::set<Constraint> &constraints,
+            const std::set<EdgeConstraint> &edge_constraints,
+            const std::vector<std::string> &map) {
     Closed closed;
     Open open;
-    open.add_node(Node(nullptr, start, 0, get_diagonal_dist(start, goal)));
+    open.add_node(Node(nullptr, start, init_cost, get_diagonal_dist(start, goal)));
     while (!open.empty()) {
         Node *node = open.get_best_f_node();
         closed.insert(node);
         if (node->location == goal)
-            return std::make_pair(node, closed);
-        std::vector<Node> neighbours = get_neighbours(agent_id, node, goal, constraints, conflicts, map);
+            return make_path(agent_id, node, closed);
+        std::vector<Node> neighbours = get_neighbours(agent_id, node, goal, constraints, edge_constraints, map);
         if (!neighbours.empty())
             for (Node &i : neighbours)
                 if (!closed.has(&i))
                     open.add_node(i);
     }
-    return std::make_pair(nullptr, closed);
+    return make_path(agent_id, nullptr, closed);
 };
 
