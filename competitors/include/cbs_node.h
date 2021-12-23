@@ -29,11 +29,11 @@ class CBSNode {
     friend std::ostream &operator<<(std::ostream &os, CBSNode const &node) {   //for debug
         os << "good? = " << node.is_valid << ", cost = " << node.cost << "\n";
         for (auto i : node.constraints)
-            os << "(" << i.agent_id << " # " << i.location.x << ", " << i.location.y << " | " << i.timestemp << ") ";
+            os << "(" << i.agent_id << " # " << i.location.x << ", " << i.location.y << " | " << i.timestamp << ") ";
         os << "\n";
         for (auto i : node.edge_constraints)
             os << "(" << i.agent_id << " # " << i.first_location.x << ", " << i.first_location.y << " | "
-               << i.second_location.x << ", " << i.second_location.y << " | " << i.timestemp << ") ";
+               << i.second_location.x << ", " << i.second_location.y << " | " << i.timestamp << ") ";
         os << "\n";
         for (auto i : node.paths) {
             for (int j = 0; j < i.locations.size(); j++)

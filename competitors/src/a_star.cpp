@@ -2,7 +2,7 @@
 #include <cmath>
 #include <algorithm>
 
-#include "a_star.h"
+#include "../include/a_star.h"
 
 
 struct NodePtrOpenComparator {
