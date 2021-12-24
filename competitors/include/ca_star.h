@@ -15,6 +15,9 @@ private:
     std::vector<int> which_robots_task;
     std::vector<std::deque<int>> task_plans;
     std::vector<int> priorities;
+    int min_priority = 0;
+    int free_priority = 0;
+    unsigned remaining_trying = 10;
     unsigned step = 0;
 
     CBSNode get_CBSNode(const std::set<Constraint> &constraints,

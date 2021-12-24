@@ -1,5 +1,16 @@
 from collections import defaultdict
 
+def read_info(file_name: str):
+    with open(file_name, 'r', encoding='utf-8') as fin:
+        robot_counts = int(fin.readline().strip().split('= ')[1])
+        step = 0
+        for line in fin.readlines():
+            if 'task' in line:
+                tasks_count = int(line.strip().split('= ')[1])
+            if 'Step' in line:
+                step = int(line.strip().split(': ')[1])
+        return robot_counts, tasks / step
+        
 
 def read_tasks(file_name: str) -> list[tuple[int, int, int]]:
     with open(file_name, 'r', encoding='utf-8') as fin:

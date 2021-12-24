@@ -3,6 +3,7 @@
 #include "../../constants.h"
 
 #include <iostream>
+#include <random>
 #include <stdexcept>
 #include <algorithm>
 
@@ -61,8 +62,8 @@ CBSNode ca_star_path_finder::get_CBSNode(const std::set<Constraint> &constraints
 }
 
 
-static std::pair<std::vector<Constraint>, std::vector<EdgeConstraint>> validate_paths(
-        std::vector<Path> paths, unsigned step, std::vector<int> priorities) {
+static std::pair<std::vector<Constraint>, std::vector<EdgeConstraint>>
+validate_paths(std::vector<Path> paths, unsigned step, std::vector<int> priorities, int min_priority) {
     size_t max_len = std::min(step + HORIZON, unsigned(paths[0].locations.size()));
     for (unsigned i = step; i < max_len; i++) {
         std::map<Location, std::vector<int>> locations;
@@ -73,10 +74,10 @@ static std::pair<std::vector<Constraint>, std::vector<EdgeConstraint>> validate_
             for (std::pair<Location, std::vector<int>> j : locations) {
                 if (j.second.size() != 1) {
                     std::vector<Constraint> constraints;
-                    int max_prior = -1;
+                    int max_prior = min_priority - 1;
                     int max_prior_agent;
                     for (auto k: j.second) {
-                        if (priorities[k] > max_prior) {
+                        if (priorities[k] >= max_prior) {
                             max_prior = priorities[k];
                             max_prior_agent = k;
                         }
@@ -99,7 +100,7 @@ static std::pair<std::vector<Constraint>, std::vector<EdgeConstraint>> validate_
             for (std::pair<std::pair<Location, Location>, std::vector<int>> j : locations) {
                 if (j.second.size() != 1) {
                     std::vector<EdgeConstraint> edge_constraints;
-                    int max_prior = -1;
+                    int max_prior = min_priority - 1;
                     int max_prior_agent;
                     for (auto k: j.second) {
                         if (priorities[k] > max_prior) {
@@ -126,7 +127,10 @@ void ca_star_path_finder::init_plans(const std::vector<robot> &robots,
         priorities.resize(robots.size());
         for (int i = 0; i < priorities.size(); i++) {
             priorities[i] = i;
+            min_priority--;
         }
+        free_priority = min_priority;
+        std::shuffle(priorities.begin(), priorities.end(), std::mt19937(std::random_device()()));
 
         for (unsigned i = 0; i < tasks.size(); i++) {
             which_robots_task[i] = int(i % robots.size());
@@ -139,7 +143,12 @@ void ca_star_path_finder::init_plans(const std::vector<robot> &robots,
     while (!nodes.empty()) {
         CBSNode node = *nodes.begin();
         std::cout << node;
-        auto constrs = validate_paths(node.paths, step, priorities);
+        for (int i = 0; i < task_plans.size(); i++) {
+            if (task_plans[i].empty() && priorities[i] >= 0) {
+                priorities[i] = free_priority ++;
+            }
+        }
+        auto constrs = validate_paths(node.paths, step, priorities, min_priority);
         if (!constrs.first.empty()) {
             nodes.erase(nodes.begin());
             for (auto constr: constrs.first) {
@@ -163,8 +172,12 @@ void ca_star_path_finder::init_plans(const std::vector<robot> &robots,
         } else break;
     }
     if (nodes.empty()) {
-        std::random_shuffle(priorities.begin(), priorities.end());
-        init_plans(robots, tasks, map);
+        if (remaining_trying > 0) {
+            remaining_trying--;
+            std::shuffle(priorities.begin(), priorities.end(), std::mt19937(std::random_device()()));
+            init_plans(robots, tasks, map);
+        }
+        throw std::runtime_error("Error: No solution found!");
     }
 }
 

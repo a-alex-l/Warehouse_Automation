@@ -2,6 +2,7 @@
 #include "../include/sfml_show.h"
 #include "../include/game.h"
 #include "../include/script_parser.h"
+#include "../../constants.h"
 #include <cassert>
 #include <fstream>
 
@@ -11,6 +12,16 @@ game::game(const std::string &file_name, path_finder *path_maker) {
     path_planner = path_maker;
     this->file_name = file_name;
     this->file_name.resize(this->file_name.size() - 4);
+    this->file_name += "_";
+    this->file_name += std::to_string(TASKS_COUNT);
+    this->file_name += "_";
+    this->file_name += std::to_string(ROBOTS_COUNT);
+    this->file_name += "__";
+    this->file_name += std::to_string(RECULC_PERIOD);
+    this->file_name += "_";
+    this->file_name += std::to_string(HORIZON);
+//    this->file_name += "_";
+//    this->file_name += "ca_star";
     this->file_name += "_synopsis.txt";
 }
 
