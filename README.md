@@ -37,7 +37,7 @@ $ ./main <map_file> <bfs | cbs | ca_star>
 ```
 ### Settings
 
-You can change the algorithm parameners in file `constansts.h`
+You can change the algorithm parameners in the file `constansts.h`
 * TASKS_COUNT - count of tasks
 * ROBOTS_COUNT - count of agents
 * HORIZON - count of steps for calc
