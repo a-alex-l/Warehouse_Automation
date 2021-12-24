@@ -35,8 +35,17 @@ And then
 ```
 $ ./main <map_file> <bfs | cbs | ca_star>
 ```
+### Settings
+
+You can change the algorithm parameners in file `constansts.h`
+* TASKS_COUNT - count of tasks
+* ROBOTS_COUNT - count of agents
+* HORIZON - count of steps for calc
+* RECULC_PERIOD - how often we will recacl strategy
 
 #### Example:
+
+* Example maps in `/tests/tests_scripts/`
 
 ```
 $ ./main ../tests/tests_scripts/map0.txt cbs
